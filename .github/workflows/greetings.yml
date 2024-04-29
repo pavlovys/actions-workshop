@@ -1,10 +1,19 @@
 name: PR Notifier
 on:
   pull_request:
+    types: [opened]
 jobs:
   notify:
     runs-on: ubuntu-latest
     steps:
-      - name: notify
+      - name: Notify
         shell: bash
-        run: echo "notifying"
+        run: |
+          curl -X POST \
+          -H "Content-Type: application/json" \
+          -d '{
+            "PRLink": "${{ github.event.pull_request.html_url }}",
+            "UserName": "${{ github.event.pull_request.user.login }}",
+            "PRTitle": "${{ github.event.pull_request.title }}"
+          }' \
+          https://hooks.slack.com/triggers/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
